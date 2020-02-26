@@ -77,17 +77,17 @@ node {
     }
     }
     stage('Build Artifact') {
-        sh """mkdir -p ${BUILDPATH}/Workspace
-              mkdir -p ${BUILDPATH}/Libraries/python
-              mkdir -p ${BUILDPATH}/Validation/Output
+        sh """mkdir -p Workspace
+              mkdir -p Libraries/python
+              mkdir -p Validation/Output
               #Get Modified Files
-              git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' ${BUILDPATH}
+              git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
 
               # Get Packaged Libs
-              find ${LIBRARYPATH} -name '*.whl' | xargs -I '{}' cp '{}' ${BUILDPATH}/Libraries/python/
+              find libraries -name '*.whl' | xargs -I '{}' cp '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}/Libraries/python/
 
               # Generate Artifact
-              tar -czvf Builds/latest_build.tar.gz ${BUILDPATH}
+              tar -czvf Builds/latest_build.tar.gz Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
            """
         archiveArtifacts artifacts: 'Builds/latest_build.tar.gz'
     }
