@@ -2,7 +2,7 @@ node {
     def GITREPO         = "/var/lib/jenkins/workspace/${env.JOB_NAME}"
     def GITREPOREMOTE   = "https://github.com/stikkireddy/SriCICD.git"
     def GITHUBCREDID    = "gitsynch"
-    def CURRENTRELEASE  = "release"
+    def CURRENTRELEASE  = "master"
     def DBTOKEN         = "DemoToken"
     def DBURL           = "https://demo.cloud.databricks.com"
     def SCRIPTPATH      = "${GITREPO}/cicd-scripts"
