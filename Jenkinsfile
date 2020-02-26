@@ -53,6 +53,7 @@ node {
         try {
         withPythonEnv('/Users/Sri.Tikkireddy/.pyenv/versions/3.6.8/bin/python3') {
             sh """
+                  ls -all ${LIBRARYPATH}
                   python3 -m pip install pytest
                   # Python Tests for Libs
                   python3 -m pytest --junit-xml=${TESTRESULTPATH}/TEST-libout.xml ${LIBRARYPATH}/python/dbxdemo/test*.py || true
