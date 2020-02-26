@@ -80,6 +80,7 @@ node {
         sh """mkdir -p Workspace
               mkdir -p Libraries/python
               mkdir -p Validation/Output
+              mkdir -p Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
               #Get Modified Files
               #git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
 
