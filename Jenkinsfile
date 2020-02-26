@@ -81,7 +81,7 @@ node {
               mkdir -p Libraries/python
               mkdir -p Validation/Output
               #Get Modified Files
-              git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
+              #git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}
 
               # Get Packaged Libs
               find libraries -name '*.whl' | xargs -I '{}' cp '{}' Builds/${env.JOB_NAME}-${env.BUILD_NUMBER}/Libraries/python/
