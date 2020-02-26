@@ -4,7 +4,7 @@ node {
     def GITHUBCREDID    = "gitsynch"
     def CURRENTRELEASE  = "release"
     def DBTOKEN         = "DemoToken"
-    def DBURL           = "https://<shardname>.cloud.databricks.com"
+    def DBURL           = "https://demo.cloud.databricks.com"
     def SCRIPTPATH      = "${GITREPO}/cicd-scripts"
     def NOTEBOOKPATH    = "${GITREPO}/notebooks"
     def LIBRARYPATH     = "${GITREPO}/libraries"
@@ -14,7 +14,7 @@ node {
     def WORKSPACEPATH   = "<Workspace Dir path e.g. /Shared/ETL>"
     def DBFSPATH        = "dbfs:/Libs/python/"
     def CLUSTERID       = "1234-5678-demo123"
-    def CONDAPATH       = "/opt/miniconda3"
+    def CONDAPATH       = "/Users/Sri.Tikkireddy/PycharmProjects/SriCICD/venv"
     def CONDAENV        = "cicddemo"
     def SLACKURL        = "https://hooks.slack.com/services/ABC123/DEF456/DEMO1122"
     def SLACKCHANNEL    = "#demo-notifications"
@@ -23,14 +23,14 @@ node {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
 
             sh """#!/bin/bash
-                  
+
                   # Configure Conda Environment for deployment & testing
-                  source ${CONDAPATH}/bin/activate ${CONDAENV}
-                  
+                  source ${CONDAPATH}/bin/activate
+
                   # Configure Databricks CLI for deployment
                   echo "${DBURL}
                   $TOKEN" | databricks configure --token
-                  
+
                   # Configure Databricks Connect for testing
                   echo "${DBURL}
                   $TOKEN
@@ -47,13 +47,13 @@ node {
     stage('Run Unit Tests') {
         try {
             sh """#!/bin/bash
-            
+
                   # Enable Conda Environment for tests
                   source ${CONDAPATH}/bin/activate ${CONDAENV}
-                  
+
                   # Python Tests for Libs
                   python3 -m pytest --junit-xml=${TESTRESULTPATH}/TEST-libout.xml ${LIBRARYPATH}/python/dbxdemo/test*.py || true
-               """           
+               """
         } catch(err) {
           step([$class: 'JUnitResultArchiver', testResults: '--junit-xml=${TESTRESULTPATH}/TEST-*.xml'])
           if (currentBuild.result == 'UNSTABLE')
@@ -63,25 +63,25 @@ node {
     }
     stage('Package') {
         sh """#!/bin/bash
-        
+
               # Enable Conda Environment for tests
               source ${CONDAPATH}/bin/activate ${CONDAENV}
-              
+
               # Package Python Library to Wheel
               cd ${LIBRARYPATH}/python/dbxdemo
               python3 setup.py sdist bdist_wheel
-           """            
-    }    
+           """
+    }
     stage('Build Artifact') {
         sh """mkdir -p ${BUILDPATH}/Workspace
               mkdir -p ${BUILDPATH}/Libraries/python
               mkdir -p ${BUILDPATH}/Validation/Output
               #Get Modified Files
               git diff --name-only --diff-filter=AMR HEAD^1 HEAD | xargs -I '{}' cp --parents -r '{}' ${BUILDPATH}
-        
+
               # Get Packaged Libs
               find ${LIBRARYPATH} -name '*.whl' | xargs -I '{}' cp '{}' ${BUILDPATH}/Libraries/python/
-        
+
               # Generate Artifact
               tar -czvf Builds/latest_build.tar.gz ${BUILDPATH}
            """
@@ -91,18 +91,18 @@ node {
         sh """#!/bin/bash
               # Enable Conda Environment for tests
               source ${CONDAPATH}/bin/activate ${CONDAENV}
-              
+
               # Use Databricks CLI to deploy Notebooks
               databricks workspace import_dir ${BUILDPATH}/Workspace ${WORKSPACEPATH}
-              
+
               dbfs cp -r ${BUILDPATH}/Libraries/python ${DBFSPATH}
-           """  
+           """
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
            sh """#!/bin/bash
-                     
+
                  #Get space delimited list of libraries
                  LIBS=\$(find ${BUILDPATH}/Libraries/python/ -name '*.whl' | sed 's#.*/##' | paste -sd " ")
-                     
+
                  #Script to uninstall, reboot if needed & instsall library
                  python3 ${SCRIPTPATH}/installWhlLibrary.py --shard=${DBURL}\
                     --token=$TOKEN\
@@ -129,9 +129,9 @@ node {
     stage('Report Test Results') {
         sh """find ${OUTFILEPATH} -name '*.json' -exec gzip --verbose {} \\;
               touch ${TESTRESULTPATH}/TEST-*.xml
-           """      
+           """
         junit "**/reports/junit/*.xml"
-        
+
     }
     stage('Send Notifications') {
         sh """python3 ${SCRIPTPATH}/notify.py "--slackurl=${SLACKURL}\
@@ -139,5 +139,5 @@ node {
                             --channel=${SLACKCHANNEL}\
                             --outputpath=${OUTFILEPATH}
            """
-    }    
+    }
 }
