@@ -66,15 +66,14 @@ node {
         }
     }
     stage('Package') {
-        sh """#!/bin/zsh
-
-              # Enable Conda Environment for tests
-              source ${CONDAPATH}/bin/activate ${CONDAENV}
+    withPythonEnv('/Users/Sri.Tikkireddy/.pyenv/versions/3.6.8/bin/python3') {
+        sh """
 
               # Package Python Library to Wheel
               cd ${LIBRARYPATH}/python/dbxdemo
               python3 setup.py sdist bdist_wheel
            """
+    }
     }
     stage('Build Artifact') {
         sh """mkdir -p ${BUILDPATH}/Workspace
