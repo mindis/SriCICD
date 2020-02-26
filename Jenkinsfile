@@ -23,6 +23,11 @@ node {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
             withPythonEnv('/Users/Sri.Tikkireddy/.pyenv/versions/3.6.8/bin/python3') {
                 sh """# Configure Conda Environment for deployment & testing
+                      export LC_ALL=en_US.UTF-8
+                      export LANG=en_US.UTF-8
+
+                      python --version
+
                       pip install databricks-connect
                       pip install databricks-cli
 
