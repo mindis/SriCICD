@@ -25,7 +25,7 @@ node {
             sh """#!/bin/bash
 
                   # Configure Conda Environment for deployment & testing
-                  source ${CONDAPATH}/bin/activate
+                  #source ${CONDAPATH}/bin/activate
 
                   # Configure Databricks CLI for deployment
                   echo "${DBURL}
