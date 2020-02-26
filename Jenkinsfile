@@ -13,7 +13,7 @@ node {
     def TESTRESULTPATH  = "${BUILDPATH}/logs/reports/junit"
     def WORKSPACEPATH   = "<Workspace Dir path e.g. /Shared/ETL>"
     def DBFSPATH        = "dbfs:/Libs/python/"
-    def CLUSTERID       = "1234-5678-demo123"
+    def CLUSTERID       = "0226-121723-stud25"
     def CONDAPATH       = "/Users/Sri.Tikkireddy/PycharmProjects/SriCICD/venv"
     def CONDAENV        = "cicddemo"
     def SLACKURL        = "https://hooks.slack.com/services/ABC123/DEF456/DEMO1122"
@@ -51,14 +51,13 @@ node {
     }
     stage('Run Unit Tests') {
         try {
-            sh """#!/bin/zsh
-
-                  # Enable Conda Environment for tests
-                  source ${CONDAPATH}/bin/activate ${CONDAENV}
-
+        withPythonEnv('/Users/Sri.Tikkireddy/.pyenv/versions/3.6.8/bin/python3') {
+            sh """
+                  python3 -m pip install pytest
                   # Python Tests for Libs
                   python3 -m pytest --junit-xml=${TESTRESULTPATH}/TEST-libout.xml ${LIBRARYPATH}/python/dbxdemo/test*.py || true
                """
+       }
         } catch(err) {
           step([$class: 'JUnitResultArchiver', testResults: '--junit-xml=${TESTRESULTPATH}/TEST-*.xml'])
           if (currentBuild.result == 'UNSTABLE')
