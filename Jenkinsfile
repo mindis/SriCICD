@@ -21,23 +21,21 @@ node {
 
     stage('Setup') {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
+            withPythonEnv('/Users/Sri.Tikkireddy/PycharmProjects/SriCICD/venv/bin/python3') {
+                sh """# Configure Conda Environment for deployment & testing
 
-            sh """# Configure Conda Environment for deployment & testing
-                  #source ${CONDAPATH}/bin/activate
+                      # Configure Databricks CLI for deployment
+                      echo "${DBURL}
+                      $TOKEN" | databricks configure --token
 
-                  which pyenv
-
-                  # Configure Databricks CLI for deployment
-                  echo "${DBURL}
-                  $TOKEN" | databricks configure --token
-
-                  # Configure Databricks Connect for testing
-                  echo "${DBURL}
-                  $TOKEN
-                  ${CLUSTERID}
-                  0
-                  15001" | databricks-connect configure
-               """
+                      # Configure Databricks Connect for testing
+                      echo "${DBURL}
+                      $TOKEN
+                      ${CLUSTERID}
+                      0
+                      15001" | databricks-connect configure
+                   """
+           }
         }
     }
     stage('Checkout') { // for display purposes
