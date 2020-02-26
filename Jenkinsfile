@@ -56,11 +56,11 @@ node {
                   ls -all .
                   python3 -m pip install pytest
                   # Python Tests for Libs
-                  python3 -m pytest --junit-xml=${TESTRESULTPATH}/TEST-libout.xml ${LIBRARYPATH}/python/dbxdemo/test*.py || true
+                  python3 -m pytest --junit-xml=logs/reports/junit/TEST-libout.xml libraries/python/dbxdemo/test*.py || true
                """
        }
         } catch(err) {
-          step([$class: 'JUnitResultArchiver', testResults: '--junit-xml=${TESTRESULTPATH}/TEST-*.xml'])
+          step([$class: 'JUnitResultArchiver', testResults: '--junit-xml=logs/reports/junit/TEST-*.xml'])
           if (currentBuild.result == 'UNSTABLE')
             currentBuild.result = 'FAILURE'
           throw err
@@ -71,7 +71,7 @@ node {
         sh """
 
               # Package Python Library to Wheel
-              cd ${LIBRARYPATH}/python/dbxdemo
+              cd libraries/python/dbxdemo
               python3 setup.py sdist bdist_wheel
            """
     }
