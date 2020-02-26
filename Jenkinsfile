@@ -25,6 +25,8 @@ node {
             sh """# Configure Conda Environment for deployment & testing
                   #source ${CONDAPATH}/bin/activate
 
+                  which python
+
                   # Configure Databricks CLI for deployment
                   echo "${DBURL}
                   $TOKEN" | databricks configure --token
