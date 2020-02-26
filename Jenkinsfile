@@ -1,6 +1,6 @@
 node {
     def GITREPO         = "/var/lib/jenkins/workspace/${env.JOB_NAME}"
-    def GITREPOREMOTE   = "https://github.com/databricks/cicd-pipline.git"
+    def GITREPOREMOTE   = "https://github.com/stikkireddy/SriCICD.git"
     def GITHUBCREDID    = "gitsynch"
     def CURRENTRELEASE  = "release"
     def DBTOKEN         = "DemoToken"
