@@ -22,7 +22,7 @@ node {
     stage('Setup') {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
 
-            sh """#!/bin/bash
+            sh """#!/bin/zsh
 
                   # Configure Conda Environment for deployment & testing
                   #source ${CONDAPATH}/bin/activate
@@ -46,7 +46,7 @@ node {
     }
     stage('Run Unit Tests') {
         try {
-            sh """#!/bin/bash
+            sh """#!/bin/zsh
 
                   # Enable Conda Environment for tests
                   source ${CONDAPATH}/bin/activate ${CONDAENV}
@@ -62,7 +62,7 @@ node {
         }
     }
     stage('Package') {
-        sh """#!/bin/bash
+        sh """#!/bin/zsh
 
               # Enable Conda Environment for tests
               source ${CONDAPATH}/bin/activate ${CONDAENV}
@@ -88,7 +88,7 @@ node {
         archiveArtifacts artifacts: 'Builds/latest_build.tar.gz'
     }
     stage('Deploy') {
-        sh """#!/bin/bash
+        sh """#!/bin/zsh
               # Enable Conda Environment for tests
               source ${CONDAPATH}/bin/activate ${CONDAENV}
 
@@ -98,7 +98,7 @@ node {
               dbfs cp -r ${BUILDPATH}/Libraries/python ${DBFSPATH}
            """
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
-           sh """#!/bin/bash
+           sh """#!/bin/zsh
 
                  #Get space delimited list of libraries
                  LIBS=\$(find ${BUILDPATH}/Libraries/python/ -name '*.whl' | sed 's#.*/##' | paste -sd " ")
