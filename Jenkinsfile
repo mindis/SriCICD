@@ -22,9 +22,7 @@ node {
     stage('Setup') {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
 
-            sh """#!/bin/zsh
-
-                  # Configure Conda Environment for deployment & testing
+            sh """# Configure Conda Environment for deployment & testing
                   #source ${CONDAPATH}/bin/activate
 
                   # Configure Databricks CLI for deployment
