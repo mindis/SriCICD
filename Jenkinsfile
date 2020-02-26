@@ -21,8 +21,10 @@ node {
 
     stage('Setup') {
         withCredentials([string(credentialsId: DBTOKEN, variable: 'TOKEN')]) {
-            withPythonEnv('/Users/Sri.Tikkireddy/PycharmProjects/SriCICD/venv/bin/python3') {
+            withPythonEnv('/Users/Sri.Tikkireddy/.pyenv/versions/3.6.8/bin/python3') {
                 sh """# Configure Conda Environment for deployment & testing
+                      pip install databricks-connect
+                      pip install databricks-cli
 
                       # Configure Databricks CLI for deployment
                       echo "${DBURL}
